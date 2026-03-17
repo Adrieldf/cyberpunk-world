@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* 
+  Tailwind v4 Configuration 
+  All custom values map directly to utility classes (e.g., text-primary, bg-cyber-grid)
+*/
+@theme {
+  /* Deep, pure darks for the void backdrop */
+  --color-background: #050505;
+  --color-foreground: #e2e8f0;
+
+  /* Cyberpunk core palette */
+  --color-primary: #ff00ff;
+  /* Neon Magenta */
+  --color-primary-glow: rgba(255, 0, 255, 0.4);
+
+  --color-secondary: #00ffff;
+  /* Neon Cyan */
+  --color-secondary-glow: rgba(0, 255, 255, 0.4);
+
+  --color-accent: #ff003c;
+  /* Cyberpunk Red */
+  --color-accent-glow: rgba(255, 0, 60, 0.4);
+
+  --color-synth-yellow: #fcee0a;
+  /* Cyberpunk classic yellow */
+  --color-synth-purple: #b026ff;
+
+  /* Synthwave-style perspective grid */
+  --background-image-cyber-grid: linear-gradient(transparent 95%, rgba(0, 255, 255, 0.15) 95%), linear-gradient(90deg, transparent 95%, rgba(0, 255, 255, 0.15) 95%);
+  --background-size-cyber-grid: 30px 30px;
+
+  /* Utilities for adding outer glows to cards or buttons (e.g shadow-neon-primary) */
+  --shadow-neon-primary: 0 0 5px var(--color-primary), 0 0 20px var(--color-primary-glow);
+  --shadow-neon-secondary: 0 0 5px var(--color-secondary), 0 0 20px var(--color-secondary-glow);
+  --shadow-neon-accent: 0 0 5px var(--color-accent), 0 0 20px var(--color-accent-glow);
+
+  /* Fonts (Maps mapping to --font-* CSS variables Next.js provides) */
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-fira-code), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base styles to apply the cyberpunk dark mode by default */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    /* Optional: Enforce a subtle CRT scanline effect across the app */
+    /* background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); */
+    /* background-size: 100% 2px, 3px 100%; */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom utilities in v4 use the @utility rule */
+@utility text-shadow-neon {
+  text-shadow: 0 0 8px currentColor, 0 0 15px currentColor;
 }
