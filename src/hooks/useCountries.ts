@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-export const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '@/lib/supabase'
 
 export interface CountryData {
   id: string
@@ -13,6 +9,13 @@ export interface CountryData {
   lng: number
   population: number
   color: string
+}
+
+// Module-level refetch registry — lets any component trigger a countries refresh
+// without prop drilling (used by the debug panel in AuthProfile)
+let _refetch: (() => void) | null = null
+export function triggerCountriesRefetch() {
+  _refetch?.()
 }
 
 // Global hook to access and subscribe to country populations
@@ -39,6 +42,9 @@ export function useCountries() {
   }, [])
 
   useEffect(() => {
+    // Register this fetch instance as the global refetcher
+    _refetch = fetchCountries
+
     fetchCountries()
 
     // Real-time population tracker
@@ -61,6 +67,7 @@ export function useCountries() {
 
     return () => {
       supabase.removeChannel(countriesChannel)
+      _refetch = null
     }
   }, [fetchCountries])
 
@@ -75,3 +82,4 @@ export function useCountries() {
 
   return { countries, isLoading, joinCountry }
 }
+

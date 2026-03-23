@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-// Initialize the Supabase client.
-// Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env.local file.
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-export const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabase } from '@/lib/supabase'
 
 // Define the structure of a sign record from the database
 export interface SignData {

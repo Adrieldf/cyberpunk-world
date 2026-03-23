@@ -5,6 +5,7 @@ import { Line } from '@react-three/drei'
 import * as THREE from 'three'
 import { geoPath, geoTransform } from 'd3-geo'
 import { latLngToVector3 } from '@/utils/geo'
+import { useSettings } from '@/hooks/useSettings'
 
 interface WorldMapBordersProps {
   radius: number
@@ -12,6 +13,7 @@ interface WorldMapBordersProps {
 
 export function WorldMapBorders({ radius }: WorldMapBordersProps) {
   const [geoData, setGeoData] = useState<any>(null)
+  const { settings } = useSettings()
 
   useEffect(() => {
     fetch('/world.geo.json')
@@ -114,18 +116,36 @@ export function WorldMapBorders({ radius }: WorldMapBordersProps) {
       )}
 
       {/* GLOWING NEON BORDERS */}
-      {linePointsList.map((points, idx) => (
-        <Line 
-          key={idx} 
-          points={points} 
-          color="#00ffff" // Cyberpunk cyan
-          lineWidth={1.5}  
-          transparent={true}
-          opacity={0.3}
-          toneMapped={false}
-          depthWrite={false}
-        />
-      ))}
+      {linePointsList.map((points, idx) => {
+        if (settings.webgpu) {
+          const positions = new Float32Array(points.flat())
+          return (
+            <line key={idx}>
+              <bufferGeometry>
+                <bufferAttribute
+                  attach="attributes-position"
+                  count={points.length}
+                  args={[positions, 3]}
+                />
+              </bufferGeometry>
+              <lineBasicMaterial color="#00ffff" transparent opacity={0.3} depthWrite={false} toneMapped={false} />
+            </line>
+          )
+        }
+        
+        return (
+          <Line 
+            key={idx} 
+            points={points} 
+            color="#00ffff" // Cyberpunk cyan
+            lineWidth={1.5}  
+            transparent={true}
+            opacity={0.3}
+            toneMapped={false}
+            depthWrite={false}
+          />
+        )
+      })}
     </group>
   )
 }
